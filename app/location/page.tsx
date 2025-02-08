@@ -79,9 +79,25 @@ const DistrictDropdown: React.FC = () => {
 
     try {
       const response = await fetch(
-        `/api/getHospital?location=${searchTerm}&district=${selectedDistrict}`
+        `/api/getHospital?location=${encodeURIComponent(
+          searchTerm
+        )}&district=${encodeURIComponent(selectedDistrict)}`
       );
-      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Server returned an error:", response.status);
+        const errorData = await response.json();
+        alert(`Error: ${errorData.error}`);
+        return;
+      }
+
+      const text = await response.text(); // Handle empty responses
+      if (!text) {
+        alert("Received an empty response from the API.");
+        return;
+      }
+
+      const data = JSON.parse(text);
       console.log(data);
 
       if (data.results && data.results.length > 0) {
@@ -92,6 +108,7 @@ const DistrictDropdown: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching hospitals:", error);
+      alert("Failed to fetch hospitals. Check console for details.");
     }
   };
 
