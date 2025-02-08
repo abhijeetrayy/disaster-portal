@@ -1,4 +1,5 @@
 import React from "react";
+import AiReco from "./components/ai/reco";
 import GoogleMapComponent from "./components/googleMap/mapComponent";
 
 const DisasterDataPortal = () => {
@@ -11,6 +12,9 @@ const DisasterDataPortal = () => {
             Live updates on ongoing disasters with severity levels and affected
             areas.
           </p>
+        </section>
+        <section className="bg-white shadow-md rounded-lg p-6 mb-6">
+          <AiReco />
         </section>
         <section className="bg-white shadow-md rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold">Interactive Disaster Map</h2>

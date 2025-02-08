@@ -23,6 +23,7 @@ interface Hospital {
     };
   };
 }
+
 const districts: District[] = districtsData.districts;
 
 const containerStyle = {
@@ -33,6 +34,7 @@ const containerStyle = {
 const DistrictDropdown: React.FC = () => {
   const [selectedDistrict, setSelectedDistrict] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filteredDistricts, setFilteredDistricts] = useState<District[]>([]);
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
   const [center, setCenter] = useState<{ lat: number; lng: number } | null>(
     null
@@ -112,9 +114,56 @@ const DistrictDropdown: React.FC = () => {
     }
   };
 
+  // Filter districts based on search term
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+
+    if (term) {
+      const filtered = districts.filter((district) =>
+        district.district.toLowerCase().includes(term.toLowerCase())
+      );
+      setFilteredDistricts(filtered);
+    } else {
+      setFilteredDistricts([]);
+    }
+  };
+
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-lg font-bold mb-2">Select a District</h2>
+      <h2 className="text-lg font-bold mb-2">Search or Select a District</h2>
+
+      {/* Search Bar for Districts */}
+      <input
+        type="text"
+        className="w-full p-2 border rounded mb-4"
+        placeholder="Search for a district..."
+        value={searchTerm}
+        onChange={handleSearch}
+      />
+
+      {/* Display Filtered Districts */}
+      {filteredDistricts.length > 0 && (
+        <div className="mb-4">
+          <h3 className="font-semibold mb-2">Matching Districts:</h3>
+          <ul className="space-y-2">
+            {filteredDistricts.map((district, index) => (
+              <li
+                key={index}
+                className="p-2 bg-gray-100 rounded cursor-pointer hover:bg-gray-200"
+                onClick={() => {
+                  setSelectedDistrict(district.district);
+                  setSearchTerm("");
+                  setFilteredDistricts([]);
+                  fetchCoordinates(district.district);
+                }}
+              >
+                {district.district}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* District Dropdown */}
       <select
@@ -130,7 +179,7 @@ const DistrictDropdown: React.FC = () => {
         ))}
       </select>
 
-      {/* Search Bar - Appears only after selecting a district */}
+      {/* Search Bar for Hospitals - Appears only after selecting a district */}
       {selectedDistrict && (
         <div className="mt-4">
           <label className="block font-semibold mb-2">Enter Location:</label>
