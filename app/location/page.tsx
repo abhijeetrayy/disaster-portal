@@ -125,7 +125,7 @@ const DistrictDropdown: React.FC = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button
-            onClick={() => fetchHospitals}
+            onClick={fetchHospitals}
             className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             Search Hospitals
