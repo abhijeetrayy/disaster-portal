@@ -77,21 +77,21 @@ const DistrictDropdown: React.FC = () => {
       return;
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/textsearch/json?query=hospitals+in+${searchTerm}+${selectedDistrict},India&key=${apiKey}`
-    );
+    try {
+      const response = await fetch(
+        `/api/getHospital?location=${searchTerm}&district=${selectedDistrict}`
+      );
+      const data = await response.json();
+      console.log(data);
 
-    console.log(response);
-    const data = await response.json();
-
-    console.log(data);
-
-    if (data.results.length > 0) {
-      setHospitals(data.results);
-      setCenter(data.results[0].geometry.location);
-    } else {
-      alert("No hospitals found in this area.");
+      if (data.results && data.results.length > 0) {
+        setHospitals(data.results);
+        setCenter(data.results[0].geometry.location);
+      } else {
+        alert("No hospitals found in this area.");
+      }
+    } catch (error) {
+      console.error("Error fetching hospitals:", error);
     }
   };
 
